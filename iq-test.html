@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IQ Тест — Вопросы</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --card: #1a1a1a;
+      --accent: #ff0055;
+      --accent-light: #ff5c8d;
+      --text: #fff;
+      --text-muted: #999;
+      --radius: 16px;
+      --transition: 0.4s ease;
+    }
+    * {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      margin: 0; padding: 0;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container {
+      background: var(--card);
+      border-radius: var(--radius);
+      max-width: 600px;
+      width: 100%;
+      padding: 30px 40px;
+      box-shadow: 0 0 30px rgba(255,0,85,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    h1, h2 {
+      color: var(--accent);
+      margin-bottom: 10px;
+      font-weight: 700;
+      text-align: center;
+      text-shadow: 0 0 10px var(--accent-light);
+    }
+    h1 {
+      font-size: 2.5rem;
+    }
+    h2 {
+      font-size: 2rem;
+    }
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    ul {
+      list-style: inside disc;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .question {
+      font-size: 1.3rem;
+      margin-bottom: 20px;
+      min-height: 72px;
+      text-align: center;
+    }
+    .answers {
+      list-style: none;
+      padding-left: 0;
+    }
+    .answers li {
+      background: #222;
+      margin: 10px 0;
+      padding: 14px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      user-select: none;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 0 6px transparent;
+    }
+    .answers li:hover {
+      background: var(--accent);
+      box-shadow: 0 0 15px var(--accent-light);
+      color: white;
+    }
+    .answers li.selected {
+      background: var(--accent-light);
+      box-shadow: 0 0 20px var(--accent);
+      color: white;
+    }
+    .btn-next {
+      margin-top: 30px;
+      background: var(--accent);
+      border: none;
+      color: white;
+      padding: 14px 32px;
+      font-size: 1.2rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: block;
+      margin-left: auto;
+    }
+    .btn-next:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+    .btn-next:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(255, 0, 85, 0.8);
+    }
+    .progress {
+      height: 8px;
+      background: #222;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+    .result {
+      text-align: center;
+    }
+    .result h2 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 15px var(--accent-light);
+    }
+    .result p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+    .restart-btn {
+      background: var(--accent-light);
+      border: none;
+      color: white;
+      padding: 14px 36px;
+      font-size: 1.2rem;
+      border-radius: var(--radius);
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 92, 141, 0.8);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .restart-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 35px rgba(255, 92, 141, 1);
+    }
+    /* Анимации переключения */
+    .fade-in {
+      animation: fadeInSlide 0.5s ease forwards;
+    }
+    .fade-out {
+      animation: fadeOutSlide 0.5s ease forwards;
+    }
+    @keyframes fadeInSlide {
+      0% {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    @keyframes fadeOutSlide {
+      0% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+    }
+    /* Адаптив */
+    @media (max-width: 640px) {
+      .container {
+        padding: 25px 20px;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      .question {
+        font-size: 1.1rem;
+      }
+      .btn-next, .restart-btn {
+        font-size: 1rem;
+        padding: 12px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Экран приветствия -->
+  <div class="container" id="welcome-screen" style="margin-bottom:30px;">
+    <h1>Добро пожаловать в IQ тест!</h1>
+    <p>Узнайте свой уровень интеллекта, ответив на 15 профессионально подобранных вопросов.</p>
+    <ul>
+      <li>Средний IQ человека — около 100.</li>
+      <li>IQ выше 130 считается высоким.</li>
+      <li>Тест состоит из разных типов задач: логика, математика, язык.</li>
+      <li>Результаты теста помогут вам понять свои сильные стороны.</li>
+    </ul>
+    <button class="btn-next" id="start-test-btn" style="display:block; margin: 0 auto;">Пройти тест</button>
+  </div>
+
+  <!-- Контейнер теста -->
+  <div class="container" id="quiz-container" style="display:none;">
+    <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+    <h2 id="question-number">Вопрос 1 из 15</h2>
+    <div class="question fade-in" id="question-text">Загрузка вопроса...</div>
+    <ul class="answers" id="answers-list"></ul>
+    <button class="btn-next" id="next-btn" disabled>Следующий</button>
+  </div>
+
+  <audio id="bg-audio" loop autoplay>
+    <source src="https://cdn.pixabay.com/audio/2022/10/20/audio_00c0b6dcd9.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // Полный массив вопросов (можно расширить)
+    const allQuestions = [
+      { question: "Какое число логически продолжает ряд: 2, 4, 8, 16, ...?", answers: ["20", "24", "32", "36"], correct: 2 },
+      { question: "Если все квадраты — прямоугольники, а все прямоугольники — фигуры, то квадраты — это фигуры?", answers: ["Да", "Нет", "Неизвестно", "Иногда"], correct: 0 },
+      { question: "Найдите число, которое не подходит к остальным: 3, 5, 8, 11, 13.", answers: ["3", "5", "8", "11"], correct: 2 },
+      { question: "Что из перечисленного не является синонимом слова 'быстрый'?", answers: ["Скорый", "Медленный", "Стремительный", "Поспешный"], correct: 1 },
+      { question: "Если сегодня понедельник, какой день будет через 9 дней?", answers: ["Среда", "Четверг", "Вторник", "Пятница"], correct: 3 },
+      { question: "Что лишнее в ряду: яблоко, апельсин, огурец, банан?", answers: ["яблоко", "апельсин", "огурец", "банан"], correct: 2 },
+      { question: "Продолжите последовательность: A, C, E, G, ...", answers: ["H", "I", "J", "K"], correct: 1 },
+      { question: "Сколько граней у куба?", answers: ["6", "8", "12", "4"], correct: 0 },
+      { question: "Если все кошки — животные, а некоторые животные — собаки, то все кошки — собаки?", answers: ["Да", "Нет", "Иногда", "Неизвестно"], correct: 1 },
+      { question: "Какое слово является анаграммой слова 'лист'?", answers: ["слит", "стил", "сити", "соль"], correct: 1 },
+      { question: "Найдите число, которое является квадратом числа 7.", answers: ["14", "49", "21", "28"], correct: 1 },
+      { question: "Если 3x = 12, то чему равно x?", answers: ["3", "4", "6", "9"], correct: 1 },
+      { question: "Что будет результатом выражения: 2 + 2 * 2?", answers: ["6", "8", "4", "10"], correct: 0 },
+      { question: "Какое число лишнее: 1, 4, 9, 16, 20, 25?", answers: ["4", "9", "16", "20"], correct: 3 },
+      { question: "Продолжите ряд чисел: 5, 10, 20, 40, ...", answers: ["45", "60", "80", "100"], correct: 2 },
+      // Можно добавить еще вопросы для разнообразия
+      { question: "Что такое логика?", answers: ["Наука о правильном мышлении", "Физика", "Искусство", "История"], correct: 0 },
+      { question: "Сколько дней в високосном году?", answers: ["365", "366", "364", "360"], correct: 1 },
+      { question: "Какой элемент периодической таблицы имеет символ O?", answers: ["Золото", "Кислород", "Серебро", "Железо"], correct: 1 }
+    ];
+
+    function getRandomQuestions(allQuestions, count = 15) {
+      const shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    // Переменные для работы с DOM
+    const welcomeScreen = document.getElementById("welcome-screen");
+    const quizContainer = document.getElementById("quiz-container");
+    const startTestBtn = document.getElementById("start-test-btn");
+    const questionNumberElem = document.getElementById("question-number");
+    const questionTextElem = document.getElementById("question-text");
+    const answersList = document.getElementById("answers-list");
+    const nextBtn = document.getElementById("next-btn");
+    const progressBar = document.getElementById("progress-bar");
+
+    // Логика теста
+    let questions = []; // выбранные вопросы для теста
+    let currentQuestion = 0;
+    let selectedAnswer = null;
+    let score = 0;
+
+    function renderQuestion() {
+      // Анимация скрытия старого вопроса
+      questionTextElem.classList.remove("fade-in");
+      questionTextElem.classList.add("fade-out");
+      answersList.classList.remove("fade-in");
+      answersList.classList.add("fade-out");
+      nextBtn.disabled = true;
+
+      setTimeout(() => {
+        const q = questions[currentQuestion];
+        questionNumberElem.textContent = `Вопрос ${currentQuestion + 1} из ${questions.length}`;
+        questionTextElem.textContent = q.question;
+
+        // Очистить ответы
+        answersList.innerHTML = "";
+        selectedAnswer = null;
+
+        q.answers.forEach((answer, index) => {
+          const li = document.createElement("li");
+          li.textContent = answer;
+          li.addEventListener("click", () => {
+            selectAnswer(index, li);
+          });
+          answersList.appendChild(li);
+        });
+
+        // Обновить прогресс
+        progressBar.style.width = `${((currentQuestion) / questions.length) * 100}%`;
+
+        // Кнопка "Следующий" или "Завершить"
+        nextBtn.textContent = currentQuestion === questions.length - 1 ? "Завершить" : "Следующий";
+
+        // Анимация появления
+        questionTextElem.classList.remove("fade-out");
+        questionTextElem.classList.add("fade-in");
+        answersList.classList.remove("fade-out");
+        answersList.classList.add("fade-in");
+      }, 500);
+    }
+
+    function selectAnswer(index, element) {
+      selectedAnswer = index;
+      nextBtn.disabled = false;
+
+      // Снять выделение с остальных
+      Array.from(answersList.children).forEach(li => li.classList.remove("selected"));
+      element.classList.add("selected");
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (selectedAnswer === null) return;
+
+      // Проверка правильного ответа
+      if (selectedAnswer === questions[currentQuestion].correct) {
+        score++;
+      }
+
+      currentQuestion++;
+
+      if (currentQuestion < questions.length) {
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    });
+
+    function showResult() {
+      // Прогресс на 100%
+      progressBar.style.width = "100%";
+
+      // Показать результат
+      quizContainer.innerHTML = `
+        <div class="result fade-in">
+          <h2>Ваш IQ: ${calculateIQ(score)}</h2>
+          <p>${interpretScore(score)}</p>
+          <button class="restart-btn" id="restart-btn">Пройти заново</button>
+        </div>
+      `;
+
+      document.getElementById("restart-btn").addEventListener("click", () => {
+        restartTest();
+      });
+    }
+
+    function calculateIQ(score) {
+      // Перевод баллов в IQ
+      return Math.round(80 + (score / questions.length) * 60);
+    }
+
+    function interpretScore(score) {
+      const iq = calculateIQ(score);
+      if (iq >= 130) return "Отличный результат! Вы обладаете высоким интеллектом.";
+      if (iq >= 115) return "Хороший результат, интеллект выше среднего.";
+      if (iq >= 90) return "Средний уровень интеллекта.";
+      return "Низкий уровень интеллекта, но IQ — не всё в жизни!";
+    }
+
+    function restartTest() {
+      // Вернуться к экрану приветствия
+      quizContainer.style.display = "none";
+      welcomeScreen.style.display = "block";
+
+      // Сброс переменных
+      currentQuestion = 0;
+      selectedAnswer = null;
+      score = 0;
+      questions = [];
+    }
+
+    // Кнопка старта теста
+    startTestBtn.addEventListener("click", () => {
+      // Выбрать случайные вопросы
+      questions = getRandomQuestions(allQuestions, 15);
+
+      // Скрыть экран приветствия
+      welcomeScreen.style.display = "none";
+
+      // Показать тест
+      quizContainer.style.display = "block";
+
+      // Начать тест
+      renderQuestion();
+    });
+
+  </script>
+
+</body>
+</html>
